@@ -1,7 +1,11 @@
 #include "painter.h"
+#include <iostream>
+#include <SDL_image.h>
 #include <SDL.h>
 #include <cstdlib>
 #include <cmath>
+#include <string>
+
 
 Painter::Painter(SDL_Window* window, SDL_Renderer* renderer_)
     : renderer(renderer_)
@@ -66,4 +70,73 @@ void Painter::setRandomColor()
    Uint8 b = rand() % 256;
    SDL_Color color = { r, g, b };
    setColor(color);
+}
+
+void Painter::createCircle(float radius)
+{
+    double rad = (angle / 180) * M_PI;
+    int centerX = x + cos(rad) * radius;
+    int centerY = y - sin(rad) * radius;
+
+    int dx = radius;
+    int dy = 0;
+    int err = 0;
+    while (dx >= dy) {
+        SDL_RenderDrawPoint(renderer, centerX + dx, centerY + dy);
+        SDL_RenderDrawPoint(renderer, centerX + dy, centerY + dx);
+        SDL_RenderDrawPoint(renderer, centerX - dy, centerY + dx);
+        SDL_RenderDrawPoint(renderer, centerX - dx, centerY + dy);
+        SDL_RenderDrawPoint(renderer, centerX - dx, centerY - dy);
+        SDL_RenderDrawPoint(renderer, centerX - dy, centerY - dx);
+        SDL_RenderDrawPoint(renderer, centerX + dy, centerY - dx);
+        SDL_RenderDrawPoint(renderer, centerX + dx, centerY - dy);
+        if (err <= 0) {
+            dy += 1;
+            err += 2*dy + 1;
+        }
+        if (err > 0) {
+            dx -= 1;
+            err -= 2*dx + 1;
+        }
+    } // while
+} // createCircle
+
+void Painter::createSquare(float size)
+{
+    for (int i = 0; i < 4; ++i) {
+        moveForward(size);
+        turnLeft(90);
+    }
+}
+
+void Painter::createParallelogram(float size)
+{
+    for (int i = 0; i < 2; ++i) {
+        moveForward(size);
+        turnLeft(60);
+        moveForward(size);
+        turnLeft(120);
+    }
+}
+
+SDL_Texture* Painter::loadTexture( std::string path )
+{
+    SDL_Texture* newTexture = NULL;
+    SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+    if ( loadedSurface == NULL )
+        std::cout << "Unable to load image " << path << " SDL_image Error: " << IMG_GetError() << std::endl;
+    else {
+        newTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
+        if( newTexture == NULL )
+            std::cout << "Unable to create texture from " << path << " SDL Error: " << SDL_GetError() << std::endl;
+        SDL_FreeSurface( loadedSurface );
+    }
+    return newTexture;
+}
+
+bool Painter::createImage( SDL_Texture* texture )
+{
+    if( texture == NULL ) return false;
+    SDL_RenderCopy( renderer, texture, NULL, NULL );
+    return true;
 }
