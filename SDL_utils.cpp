@@ -1,6 +1,7 @@
 #include "SDL_utils.h"
 #include <iostream>
 
+
 void initSDL(SDL_Window* &window, SDL_Renderer* &renderer,
              int SCREEN_HEIGHT, int SCREEN_WIDTH, const std::string &WINDOW_TITLE)
 {
@@ -13,16 +14,14 @@ void initSDL(SDL_Window* &window, SDL_Renderer* &renderer,
      //  SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (window == nullptr) logSDLError(std::cout, "CreateWindow", true);
 
-
-    //Khi thông thường chạy với môi trường bình thường ở nhà
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED |
                                               SDL_RENDERER_PRESENTVSYNC);
-    //Khi chạy ở máy thực hành WinXP ở trường (máy ảo)
     //renderer = SDL_CreateSoftwareRenderer(SDL_GetWindowSurface(window));
     if (renderer == nullptr) logSDLError(std::cout, "CreateRenderer", true);
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+
 }
 
 void logSDLError(std::ostream& os,

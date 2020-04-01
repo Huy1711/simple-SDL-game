@@ -2,6 +2,7 @@
 #define SDL_UTILS__H
 
 #include <SDL.h>
+#include <SDL_image.h>
 #include <iostream>
 
 void initSDL(SDL_Window* &window, SDL_Renderer* &renderer,
