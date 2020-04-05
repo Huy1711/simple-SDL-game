@@ -5,36 +5,14 @@
 #include <SDL.h>
 #include "SDL_utils.h"
 #include "painter.h"
+#include "player.h"
 
 using namespace std;
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 const string WINDOW_TITLE = "My Game";
-
-bool isInside(const SDL_Rect &rect, int minX, int minY, int maxX, int maxY) {
-    return (minX<=rect.x && rect.x+32<=maxX && minY<=rect.y && rect.y+32<=maxY);
-}
-
-    void move(SDL_Rect &rect, int &stepX, int &stepY) {
-        rect.x+=stepX;
-        rect.y+=stepY;
-        stepX=0;
-        stepY=0;
-    }
-
-    void moveRight(int &stepX) {
-        stepX+=32;
-    }
-    void moveLeft(int &stepX) {
-        stepX-=32;
-    }
-    void moveUp(int &stepY) {
-        stepY-=32;
-    }
-    void moveDown(int &stepY) {
-        stepY+=32;
-    }
+int DELAY_TIME = 200;
 
 int main(int argc, char* argv[])
 {
@@ -44,43 +22,45 @@ int main(int argc, char* argv[])
     initSDL(window, renderer, SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_TITLE);
     SDL_Texture* texture = NULL;
 
-    SDL_Texture* mapTex;
-    SDL_Surface* tmpSurface = IMG_Load("ava.jpg");
-    mapTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-    SDL_FreeSurface(tmpSurface);
+    const int FPS = 600;
+    const int frameDelay = 10000/FPS;
+    unsigned int frameStart;
+    int frameTime;
 
-    SDL_Rect player;
-    player.h = 32;
-    player.w = 32;
-    player.x = 50;
-    player.y = 50;
-    int stepX=0, stepY=0;
+    Player player;
 
     SDL_Event e;
 
 
     Painter painter(window, renderer);
-    texture = painter.loadTexture("ava.jpg");
+    texture = painter.loadTexture("map.jpg");
 
 
-    while(isInside(player, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
+    while(player.isInside(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
+        frameStart = SDL_GetTicks();
+
+        player.move();
         painter.createImage(texture);
-        SDL_RenderCopy(renderer, mapTex, NULL, &player);
+        player.render(renderer);
         SDL_RenderPresent(renderer);
-        SDL_Delay(50);
+        SDL_Delay(DELAY_TIME);
 
-        if ( SDL_WaitEvent(&e) == 0) continue;
+        if ( SDL_PollEvent(&e) == 0) continue;
         if (e.type == SDL_QUIT) break;
         if (e.type == SDL_KEYDOWN) {
         	switch (e.key.keysym.sym) {
         		case SDLK_ESCAPE: break;
-        		case SDLK_LEFT: moveLeft(stepX); break;
-            	case SDLK_RIGHT: moveRight(stepX); break;
-            	case SDLK_DOWN: moveDown(stepY); break;
-            	case SDLK_UP: moveUp(stepY); break;
+        		case SDLK_LEFT: player.moveLeft(); break;
+            	case SDLK_RIGHT: player.moveRight(); break;
+            	case SDLK_DOWN: player.moveDown(); break;
+            	case SDLK_UP: player.moveUp(); break;
         		default: break;
 			}
-			move(player, stepX, stepY);
+        }
+        frameTime = SDL_GetTicks() - frameStart;
+
+        if(frameDelay > frameTime) {
+            SDL_Delay(frameDelay - frameTime);
         }
     }
 
