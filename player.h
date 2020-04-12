@@ -2,11 +2,13 @@
 #define player__h
 #include <SDL.h>
 #include <SDL_image.h>
+#include <iostream>
+#include "TextureManager.h"
+#include "Position.h"
 
 class Player {
-    int x=30;
-    int y=30;
-    int size = 30;
+    Position position;
+    int size = 10;
     int stepX=0, stepY=0;
     SDL_Renderer* renderer;
     SDL_Texture* playerTex;

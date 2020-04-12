@@ -1,25 +1,26 @@
 #include "player.h"
 
-
 void Player::render(SDL_Renderer* renderer) {
-    SDL_Surface* tmpSurface = IMG_Load("pacman.jpg");
-    playerTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-    SDL_FreeSurface(tmpSurface);
 
     SDL_Rect playerRect;
-    playerRect.x = x;
-    playerRect.y = y;
+    playerRect.x = position.x;
+    playerRect.y = position.y;
     playerRect.h = size;
     playerRect.w = size;
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &playerRect);
     SDL_RenderCopy(renderer, playerTex, NULL, &playerRect);
 }
 
 bool Player::isInside(int minX, int minY, int maxX, int maxY) {
-    return (minX<=x && x+size<=maxX && minY<=y && y+size<=maxY);
+    return (minX<=position.x && position.x+size<=maxX &&
+            minY<=position.y && position.y+size<=maxY);
 }
 void Player::move() {
-    x+=stepX;
-    y+=stepY;
+    position.x+=stepX;
+    position.y+=stepY;
+    stepX = 0;
+    stepY = 0;
 }
 
 void Player::moveRight() {

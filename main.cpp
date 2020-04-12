@@ -4,7 +4,7 @@
 #include <cstring>
 #include <SDL.h>
 #include "SDL_utils.h"
-#include "painter.h"
+#include "TextureManager.h"
 #include "player.h"
 
 using namespace std;
@@ -12,7 +12,7 @@ using namespace std;
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 const string WINDOW_TITLE = "My Game";
-int DELAY_TIME = 200;
+int DELAY_TIME = 100;
 
 int main(int argc, char* argv[])
 {
@@ -20,32 +20,22 @@ int main(int argc, char* argv[])
     SDL_Window* window;
     SDL_Renderer* renderer;
     initSDL(window, renderer, SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_TITLE);
+
     SDL_Texture* texture = NULL;
 
-    const int FPS = 600;
-    const int frameDelay = 10000/FPS;
-    unsigned int frameStart;
-    int frameTime;
-
     Player player;
-
     SDL_Event e;
 
-
-    Painter painter(window, renderer);
-    texture = painter.loadTexture("map.jpg");
-
-
     while(player.isInside(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
-        frameStart = SDL_GetTicks();
-
         player.move();
-        painter.createImage(texture);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderClear(renderer);
         player.render(renderer);
+
         SDL_RenderPresent(renderer);
         SDL_Delay(DELAY_TIME);
 
-        if ( SDL_PollEvent(&e) == 0) continue;
+        if ( SDL_WaitEvent(&e) == 0) continue;
         if (e.type == SDL_QUIT) break;
         if (e.type == SDL_KEYDOWN) {
         	switch (e.key.keysym.sym) {
@@ -57,11 +47,7 @@ int main(int argc, char* argv[])
         		default: break;
 			}
         }
-        frameTime = SDL_GetTicks() - frameStart;
 
-        if(frameDelay > frameTime) {
-            SDL_Delay(frameDelay - frameTime);
-        }
     }
 
     waitUntilKeyPressed();
