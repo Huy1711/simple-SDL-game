@@ -6,52 +6,50 @@
 #include "SDL_utils.h"
 #include "TextureManager.h"
 #include "player.h"
-
+#include "Game.h"
 using namespace std;
+
+Game *game = nullptr;
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 const string WINDOW_TITLE = "My Game";
-int DELAY_TIME = 100;
 
 int main(int argc, char* argv[])
 {
     srand(time(0));
+    game = new Game();
     SDL_Window* window;
     SDL_Renderer* renderer;
     initSDL(window, renderer, SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_TITLE);
 
-    SDL_Texture* texture = NULL;
+    const int FPS = 60;
+    const int frameDelay = 1000/FPS;
+    unsigned int frameStart;
+    int frameTime;
+
+    SDL_Texture* playerTex;
+    playerTex = TextureManager::loadTexture("UET.jpg", renderer);
 
     Player player;
-    SDL_Event e;
 
-    while(player.isInside(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
-        player.move();
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderClear(renderer);
-        player.render(renderer);
+    while(true) {
+        frameStart = SDL_GetTicks();
 
+
+        SDL_RenderCopy(renderer, playerTex, NULL, NULL);
+        // game->handleEvents();
+        game->update();
+        game->render();
         SDL_RenderPresent(renderer);
-        SDL_Delay(DELAY_TIME);
 
-        if ( SDL_WaitEvent(&e) == 0) continue;
-        if (e.type == SDL_QUIT) break;
-        if (e.type == SDL_KEYDOWN) {
-        	switch (e.key.keysym.sym) {
-        		case SDLK_ESCAPE: break;
-        		case SDLK_LEFT: player.moveLeft(); break;
-            	case SDLK_RIGHT: player.moveRight(); break;
-            	case SDLK_DOWN: player.moveDown(); break;
-            	case SDLK_UP: player.moveUp(); break;
-        		default: break;
-			}
+        frameTime = SDL_GetTicks() - frameStart;
+        if (frameDelay > frameTime) {
+            SDL_Delay(frameDelay - frameTime);
         }
-
     }
 
     waitUntilKeyPressed();
-    SDL_DestroyTexture(texture);
     quitSDL(window, renderer);
     return 0;
 }

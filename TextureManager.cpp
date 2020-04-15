@@ -1,6 +1,5 @@
 #include "TextureManager.h"
 
-
 TextureManager::TextureManager (SDL_Window* window, SDL_Renderer* renderer_)
     : renderer(renderer_)
 {
@@ -11,14 +10,13 @@ TextureManager::TextureManager (SDL_Window* window, SDL_Renderer* renderer_)
 
 }
 
-SDL_Texture* TextureManager::loadTexture( std::string path )
+SDL_Texture* TextureManager::loadTexture( std::string path, SDL_Renderer* renderer )
 {
     SDL_Texture* newTexture = NULL;
     SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
     if ( loadedSurface == NULL )
         std::cout << "Unable to load image " << path << " SDL_image Error: " << IMG_GetError() << std::endl;
-    else
-    {
+    else {
         newTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
         if( newTexture == NULL )
             std::cout << "Unable to create texture from " << path << " SDL Error: " << SDL_GetError() << std::endl;

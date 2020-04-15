@@ -6,3 +6,6 @@
 *.o
 *.obj
 *.exe
+*.cbp
+*.depend
+*.layout
