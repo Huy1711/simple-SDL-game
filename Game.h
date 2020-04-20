@@ -1,7 +1,12 @@
 #ifndef game_h
 #define game_h
 #include "SDL.h"
+#include <cstring>
 #include <iostream>
+#include "player.h"
+#include "Position.h"
+#include "TextureManager.h"
+using namespace std;
 
 enum GameStatus {
     GAME_RUNNING = 1,
@@ -10,10 +15,11 @@ enum GameStatus {
     GAME_OVER = 8 | GAME_STOP,
 };
 
+
 class Game {
-    GameStatus status;
-    SDL_Window* window;
+    GameStatus status=GAME_RUNNING;
     SDL_Renderer* renderer;
+
 
 public:
     Game();
@@ -22,12 +28,12 @@ public:
     void handleEvents();
     void update();
     void render();
+    void interpretEvent(SDL_Event e);
 
-    bool isGameRunning() const { return status == GAME_RUNNING; }
+    bool isGameRunning() const { return (status == GAME_RUNNING); }
 private:
 
 
 };
-
 
 #endif // game_h

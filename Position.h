@@ -1,32 +1,28 @@
 #ifndef position_h
 #define position_h
+#include "Vector.h"
 
 enum Direction {
     UP, DOWN, LEFT, RIGHT
 };
 
 struct Position {
-    int x;
-    int y;
+    Vector2D position;
+    Vector2D velocity;
+    int speed = 10;
 
-    Position(int _x = 0, int _y = 0) : x(_x), y(_y) {}
+    Position();
+    Position(float _x, float _y);
 
-
-    Position move(Direction direction) const {
-        switch(direction) {
-            case UP: return Position(x, y-1);
-            case DOWN: return Position(x, y + 1);
-    		case LEFT: return Position(x - 1, y);
-    		case RIGHT: return Position(x + 1, y);
-        }
+    void init() {
+        velocity.x = 0;
+        velocity.y = 0;
     }
 
-    bool isInsideBox(int left, int top, int width, int height) const {
-        return x >= left && x < left+width && y >= top && y < top+height;
+    void update() {
+        position.x += velocity.x * speed;
+        position.y += velocity.y * speed;
     }
 
-    bool operator==(Position p) const {
-        return x == p.x && y == p.y;
-    }
 };
 #endif // position_h

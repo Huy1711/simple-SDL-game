@@ -15,7 +15,7 @@ class TextureManager
 
 public:
     TextureManager(SDL_Window* window, SDL_Renderer* renderer);
-
+    ~TextureManager() { SDL_DestroyRenderer(renderer); }
     static SDL_Texture* loadTexture( std::string path, SDL_Renderer* renderer );
     bool createImage( SDL_Texture* texture );
 };
