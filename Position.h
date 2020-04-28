@@ -1,28 +1,39 @@
-#ifndef position_h
-#define position_h
-#include "Vector.h"
-
+#ifndef POSITION_H
+#define POSITION_H
+#include "Game.h"
 enum Direction {
-    UP, DOWN, LEFT, RIGHT
+    UP = 0, DOWN, LEFT, RIGHT
 };
 
-struct Position {
-    Vector2D position;
-    Vector2D velocity;
-    int speed = 10;
+struct Position
+{
+    int x;
+    int y;
 
-    Position();
-    Position(float _x, float _y);
+    Position(int x_ = 0, int y_ = 0) : x(x_), y(y_) {}
 
-    void init() {
-        velocity.x = 0;
-        velocity.y = 0;
+    bool operator==(Position p) const {
+        return x == p.x && y == p.y;
     }
 
-    void update() {
-        position.x += velocity.x * speed;
-        position.y += velocity.y * speed;
+    void move(Direction direction){
+        switch(direction) {
+            case UP:
+                //if (y > 0 && !map1[y-1][x])
+                    y -= 1;
+                break;
+            case DOWN:
+                //if (y < 30-1 && !map1[y+1][x])
+                    y += 1;
+                break;
+            case LEFT:
+                //if (x > 0 && !map1[y][x-1])
+                    x -= 1; break;
+            case RIGHT:
+                //if (x < 20-1 && !map1[y][x+1])
+                x += 1; break;
+        }
     }
-
 };
-#endif // position_h
+
+#endif // POSITION_H

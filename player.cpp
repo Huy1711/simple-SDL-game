@@ -1,17 +1,22 @@
 #include "player.h"
 
-Player::Player(SDL_Renderer* ren, int x, int y) {
+Player::Player(SDL_Renderer *ren, int x, int y) {
     renderer = ren;
-    playerTex = TextureManager::loadTexture("UET.jpg", ren);
-    position.position.x = x;
-    position.position.y = y;
+    playerTex = TextureManager::loadTexture("UET.jpg", renderer);
+    position.x = x;
+    position.y = y;
 }
 
 void Player::update(){
-    playerRect.x = position.position.x;
-    playerRect.y = position.position.y;
+    playerRect.x = position.x*size;
+    playerRect.y = position.y*size;
     playerRect.w = size;
     playerRect.h = size;
+}
+
+void Player::setPosition(int x, int y) {
+    position.x = x;
+    position.y = y;
 }
 
 void Player::render(SDL_Renderer* renderer) {
@@ -19,8 +24,15 @@ void Player::render(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, playerTex, NULL, &playerRect);
 }
 
-bool Player::checkCollision( SDL_Rect b ) {
-    {
+void Player::move(Direction direction) {
+    switch(direction) {
+        case UP: position.y -= 1; break;
+        case DOWN: position.y += 1; break;
+        case LEFT: position.x -= 1; break;
+        case RIGHT: position.x += 1; break;
+    }
+}
+bool Player::checkCollision(const SDL_Rect &b) { //lazyfoo
     int leftA, leftB;
     int rightA, rightB;
     int topA, topB;
@@ -53,4 +65,4 @@ bool Player::checkCollision( SDL_Rect b ) {
     }
     return true;
 }
-}
+

@@ -28,7 +28,6 @@ public:
     void handleEvents();
     void update();
     void render();
-    void interpretEvent(SDL_Event e);
 
     bool isGameRunning() const { return (status == GAME_RUNNING); }
 private:

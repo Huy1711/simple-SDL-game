@@ -5,6 +5,7 @@
 #include <iostream>
 #include "TextureManager.h"
 #include "Position.h"
+#include "Game.h"
 using namespace std;
 
 class Game;
@@ -14,20 +15,23 @@ class Player {
     int size = 30;
     SDL_Renderer* renderer;
     SDL_Texture* playerTex;
-    SDL_Rect playerRect;
+
 
 public:
     Position position;
+    SDL_Rect playerRect;
 
     Player(SDL_Renderer* ren, int x, int y);
     ~Player() {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyTexture(playerTex);
     }
+    void setPosition(int x, int y);
     void update();
     void render(SDL_Renderer* renderer);
     void move(Direction direction);
-    bool checkCollision( SDL_Rect b );
+    bool checkCollision(const SDL_Rect &b);
+    //void hitWall(SDL_Rect wall);
 };
 
 #endif // player__h
