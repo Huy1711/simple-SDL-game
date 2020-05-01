@@ -8,8 +8,8 @@ Player::Player(SDL_Renderer *ren, int x, int y) {
 }
 
 void Player::update(){
-    playerRect.x = position.x*size;
-    playerRect.y = position.y*size;
+    playerRect.x = position.x;
+    playerRect.y = position.y;
     playerRect.w = size;
     playerRect.h = size;
 }
@@ -17,6 +17,7 @@ void Player::update(){
 void Player::setPosition(int x, int y) {
     position.x = x;
     position.y = y;
+    update();
 }
 
 void Player::render(SDL_Renderer* renderer) {
@@ -26,10 +27,10 @@ void Player::render(SDL_Renderer* renderer) {
 
 void Player::move(Direction direction) {
     switch(direction) {
-        case UP: position.y -= 1; break;
-        case DOWN: position.y += 1; break;
-        case LEFT: position.x -= 1; break;
-        case RIGHT: position.x += 1; break;
+        case UP: position.y -= speed; break;
+        case DOWN: position.y += speed; break;
+        case LEFT: position.x -= speed; break;
+        case RIGHT: position.x += speed; break;
     }
 }
 bool Player::checkCollision(const SDL_Rect &b) { //lazyfoo
@@ -65,4 +66,3 @@ bool Player::checkCollision(const SDL_Rect &b) { //lazyfoo
     }
     return true;
 }
-

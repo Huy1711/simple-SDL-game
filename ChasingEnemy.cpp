@@ -1,13 +1,13 @@
-#include "Enemy.h"
+#include "ChasingEnemy.h"
 
-Enemy::Enemy(SDL_Renderer* ren, int x, int y) {
+ChasingEnemy::ChasingEnemy(SDL_Renderer* ren, int x, int y) {
     renderer = ren;
-    enemyTex = TextureManager::loadTexture("HUST.jpg", renderer);
+    enemyTex = TextureManager::loadTexture("ulis.jpg", renderer);
     enemyPos.x = x;
     enemyPos.y = y;
 }
 
-void Enemy::update(){
+void ChasingEnemy::update(){
 
     enemyRect.x = enemyPos.x;
     enemyRect.y = enemyPos.y;
@@ -15,11 +15,11 @@ void Enemy::update(){
     enemyRect.h = size;
 }
 
-void Enemy::render(SDL_Renderer* renderer) {
+void ChasingEnemy::render(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, enemyTex, NULL, &enemyRect);
 }
 
-void Enemy::move(Direction direction) {
+void ChasingEnemy::move(Direction direction) {
     switch(direction) {
         case UP: enemyPos.y -= 1*speed; break;
         case DOWN: enemyPos.y += 1*speed; break;
@@ -28,7 +28,7 @@ void Enemy::move(Direction direction) {
     }
 }
 
-bool Enemy::canMove(Direction direction, bool map[20][30]){
+bool ChasingEnemy::canMove(Direction direction, bool map[20][30]){
     switch(direction) {
         case LEFT: return (enemyPos.x > 0 && !map[enemyPos.y/30][(enemyPos.x)/30]);
         case RIGHT: return (enemyPos.x < 900-30 && !map[enemyPos.y/30][(enemyPos.x)/30+1]);

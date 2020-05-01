@@ -1,11 +1,11 @@
-#ifndef ENEMY_H
-#define ENEMY_H
+#ifndef CHASINGENEMY_H
+#define CHASINGENEMY_H
 #include "TextureManager.h"
 #include "Position.h"
 #include <cstring>
 #include <SDL.h>
 
-class Enemy {
+class ChasingEnemy {
 
     int size = 30;
     SDL_Renderer* renderer;
@@ -14,10 +14,10 @@ class Enemy {
 public:
     Position enemyPos;
     SDL_Rect enemyRect;
-    int speed = 3;
+    int speed = 1;
 
-    Enemy(SDL_Renderer* ren, int x, int y);
-    ~Enemy() {
+    ChasingEnemy(SDL_Renderer* ren, int x, int y);
+    ~ChasingEnemy() {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyTexture(enemyTex);
     }
@@ -27,4 +27,4 @@ public:
     bool canMove(Direction direction, bool map[20][30]);
 };
 
-#endif // ENEMY_H
+#endif

@@ -17,4 +17,3 @@ void Game::render() {
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
 }
-

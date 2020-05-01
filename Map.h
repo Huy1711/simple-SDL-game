@@ -25,6 +25,4 @@ bool map1[20][30] = {
 };
 
 
-
-
 #endif // MAP_H

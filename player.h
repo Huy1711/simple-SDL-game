@@ -15,7 +15,7 @@ class Player {
     int size = 30;
     SDL_Renderer* renderer;
     SDL_Texture* playerTex;
-
+    int speed = 30;
 
 public:
     Position position;
@@ -35,4 +35,3 @@ public:
 };
 
 #endif // player__h
-
