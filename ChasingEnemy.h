@@ -1,6 +1,6 @@
 #ifndef CHASINGENEMY_H
 #define CHASINGENEMY_H
-#include "TextureManager.h"
+#include "Gallery.h"
 #include "Position.h"
 #include <cstring>
 #include <SDL.h>
@@ -21,10 +21,12 @@ public:
         SDL_DestroyRenderer(renderer);
         SDL_DestroyTexture(enemyTex);
     }
+    void setPosition(int x, int y);
     void update();
     void render(SDL_Renderer* renderer);
     void move(Direction direction);
-    bool canMove(Direction direction, bool map[20][30]);
+    bool canMove(Direction direction, int map[20][30]);
+    void chasingEnemy(const Player &player, int map[20][30]);
 };
 
 #endif

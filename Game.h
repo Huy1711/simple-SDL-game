@@ -5,7 +5,7 @@
 #include <iostream>
 #include "player.h"
 #include "Position.h"
-#include "TextureManager.h"
+#include "Gallery.h"
 using namespace std;
 
 enum GameStatus {

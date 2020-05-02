@@ -1,6 +1,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
-#include "TextureManager.h"
+#include "Gallery.h"
 #include "Position.h"
 #include <cstring>
 #include <SDL.h>
@@ -14,7 +14,7 @@ class Enemy {
 public:
     Position enemyPos;
     SDL_Rect enemyRect;
-    int speed = 3;
+    int speed = 5;
 
     Enemy(SDL_Renderer* ren, int x, int y);
     ~Enemy() {
@@ -24,7 +24,8 @@ public:
     void update();
     void render(SDL_Renderer* renderer);
     void move(Direction direction);
-    bool canMove(Direction direction, bool map[20][30]);
+    bool canMove(Direction direction, int map[20][30]);
+    void horizontalMoving(int map[20][30]);
 };
 
 #endif // ENEMY_H

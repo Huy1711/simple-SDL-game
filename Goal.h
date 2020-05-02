@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <iostream>
-#include "TextureManager.h"
+#include "Gallery.h"
 #include "Position.h"
 #include "Game.h"
 using namespace std;
@@ -16,6 +16,7 @@ class Goal {
 public:
     Position position;
     SDL_Rect goalRect;
+    int speed = 5;
 
     Goal(SDL_Renderer* ren, int x, int y);
     ~Goal() {
@@ -23,8 +24,11 @@ public:
         SDL_DestroyTexture(goalTex);
     }
     void update();
+    void setPosition(int x, int y);
     void render(SDL_Renderer* renderer);
-    //void move(Direction direction);
+    void move(Direction direction);
+    bool canMove(Direction direction, int map[20][30]);
+    void movingGoal(const Player &player, int map[20][30]);
 };
 
 #endif

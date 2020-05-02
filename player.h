@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <iostream>
-#include "TextureManager.h"
+#include "Gallery.h"
 #include "Position.h"
 #include "Game.h"
 using namespace std;

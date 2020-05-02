@@ -2,7 +2,7 @@
 
 Player::Player(SDL_Renderer *ren, int x, int y) {
     renderer = ren;
-    playerTex = TextureManager::loadTexture("UET.jpg", renderer);
+    playerTex = Gallery::loadTexture("UET.jpg", renderer);
     position.x = x;
     position.y = y;
 }
@@ -21,7 +21,7 @@ void Player::setPosition(int x, int y) {
 }
 
 void Player::render(SDL_Renderer* renderer) {
-
+    update();
     SDL_RenderCopy(renderer, playerTex, NULL, &playerRect);
 }
 
