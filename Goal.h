@@ -8,6 +8,8 @@
 #include "Game.h"
 using namespace std;
 
+class Game;
+
 class Goal {
 
     SDL_Renderer* renderer;

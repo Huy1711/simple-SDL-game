@@ -2,7 +2,7 @@
 
 BulletEnemy::BulletEnemy(SDL_Renderer* ren, int x, int y) {
     renderer = ren;
-    enemyTex = Gallery::loadTexture("ussh.jpg", renderer);
+    enemyTex = Gallery::loadTexture("ueb.jpg", renderer);
     enemyPos.x = x;
     enemyPos.y = y;
 }
@@ -46,6 +46,6 @@ bool BulletEnemy::canMove(Direction direction, int map[20][30]){
 
 void BulletEnemy::bulletMoving(const Player &player, int map[20][30]) {
     if(canMove(DOWN, map)) move(DOWN);
-    if(enemyPos.y >= 540) setPosition(player.position.x, 60);
+    if(enemyPos.y >= 540) setPosition(player.position.x, 30);
 }
 

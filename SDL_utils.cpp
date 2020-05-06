@@ -1,5 +1,6 @@
 #include "SDL_utils.h"
 #include <iostream>
+#include <SDL_ttf.h>
 
 
 void initSDL(SDL_Window* &window, SDL_Renderer* &renderer,
@@ -21,7 +22,7 @@ void initSDL(SDL_Window* &window, SDL_Renderer* &renderer,
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-
+    TTF_Init();
 }
 
 void logSDLError(std::ostream& os,

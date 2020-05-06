@@ -7,6 +7,21 @@ Gallery::Gallery(SDL_Renderer* renderer_)
 {
     loadGamePictures();
     loadGameSounds();
+    font = TTF_OpenFont("foo.ttf", 24);
+    textRect.x = 400;
+    textRect.y = 0;
+    textRect.w = 50;
+    textRect.h = 30;
+
+    deathCountRect.x = 700;
+    deathCountRect.y = 0;
+    deathCountRect.w = 50;
+    deathCountRect.h = 30;
+
+    levelRect.x = 90;
+    levelRect.y = 0;
+    levelRect.w = 50;
+    levelRect.h = 30;
 }
 
 Gallery::~Gallery()
@@ -57,4 +72,52 @@ void Gallery::loadGameSounds() {
     sounds[MOVING] = Mix_LoadWAV("move.wav");
     sounds[HIT_ENEMY] = Mix_LoadWAV("enemyHit.wav");
     sounds[LEVEL_PASS] = Mix_LoadWAV("warp.wav");
+}
+
+void Gallery::loadGameText(int frameStart){
+    string textOut = "";
+    string strValue = "";
+    unsigned int timeValue = SDL_GetTicks()/1000 - frameStart/1000;
+    int minute = timeValue/60;
+    int second = timeValue - minute*60;
+    strValue += to_string(minute);
+    strValue += ":";
+    strValue += to_string(second);
+    textOut += strValue;
+    SDL_Surface *time = TTF_RenderText_Solid(font, textOut.c_str(), textColor);
+    textTexture = SDL_CreateTextureFromSurface(renderer, time);
+    SDL_FreeSurface(time);
+    SDL_QueryTexture(textTexture, NULL, NULL, &textRect.w, &textRect.h);
+}
+
+void Gallery::loadDeathCount(int deaths){
+    string textOut = "Fails: ";
+    string strValue = "";
+    strValue += to_string(deaths);
+    textOut += strValue;
+    SDL_Surface *deathCountSurface = TTF_RenderText_Solid(font, textOut.c_str(), textColor);
+    deathCountText = SDL_CreateTextureFromSurface(renderer, deathCountSurface);
+    SDL_FreeSurface(deathCountSurface);
+    SDL_QueryTexture(deathCountText, NULL, NULL, &deathCountRect.w, &deathCountRect.h);
+}
+
+void Gallery::loadLevelCount(int level){
+    string textOut = "Level ";
+    string strValue = "";
+    strValue += to_string(level);
+    textOut += strValue;
+    SDL_Surface *levelSurface = TTF_RenderText_Solid(font, textOut.c_str(), textColor);
+    levelText = SDL_CreateTextureFromSurface(renderer, levelSurface);
+    SDL_FreeSurface(levelSurface);
+    SDL_QueryTexture(levelText, NULL, NULL, &levelRect.w, &levelRect.h);
+}
+
+
+void Gallery::renderTimeAndDeath(int frameStart, int deaths, int level) {
+    loadGameText(frameStart);
+    loadDeathCount(deaths);
+    loadLevelCount(level);
+    SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+    SDL_RenderCopy(renderer, deathCountText, NULL, &deathCountRect);
+    SDL_RenderCopy(renderer, levelText, NULL, &levelRect);
 }

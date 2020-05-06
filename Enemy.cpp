@@ -2,7 +2,7 @@
 
 Enemy::Enemy(SDL_Renderer* ren, int x, int y) {
     renderer = ren;
-    enemyTex = Gallery::loadTexture("HUST.jpg", renderer);
+    enemyTex = Gallery::loadTexture("is.jpg", renderer);
     enemyPos.x = x;
     enemyPos.y = y;
 }

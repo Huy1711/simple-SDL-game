@@ -4,7 +4,6 @@
 #include <cmath>
 #include <cstring>
 #include <SDL.h>
-#include <SDL_mixer.h>
 #include "SDL_utils.h"
 #include "Gallery.h"
 #include "Map.h"
@@ -27,8 +26,8 @@ const int CELL_SIZE = 30;
 const int ROWS = SCREEN_WIDTH/BOARD_WIDTH;
 const int COLUMNS = SCREEN_HEIGHT/BOARD_HEIGHT;
 
-const SDL_Color BOARD_COLOR = {0, 0, 0};
-const SDL_Color LINE_COLOR = {128, 128, 128};
+//const SDL_Color BOARD_COLOR = {0, 0, 0};
+//const SDL_Color LINE_COLOR = {128, 128, 128};
 
 void interpretEvent(SDL_Event e, Player &player, int map[COLUMNS][ROWS]);
 void renderGameplay(SDL_Renderer* renderer);
@@ -50,7 +49,9 @@ bool playerHitEnemy8(Player &player, ChasingEnemy &enemy, ChasingEnemy &enemy2, 
 void drawVerticalLine(SDL_Renderer* renderer, int left, int top, int cells);
 void drawHorizontalLine(SDL_Renderer* renderer, int left, int top, int cells);
 void drawWall(SDL_Renderer* renderer, int map[COLUMNS][ROWS]);
-bool passLevel(Player &player, Goal &goal);
+void renderSplashScreen();
+void renderClock(SDL_Renderer *renderer, int frameStart, int deaths, int level);
+bool passLevel(int &level, Player &player, Goal &goal);
 void setFirstPosition(Player &player);
 
 Gallery* gallery = nullptr; // global picture manager
@@ -59,9 +60,11 @@ Map map;
 int main(int argc, char* argv[])
 {
     srand(time(0));
+
     SDL_Window* window;
     SDL_Renderer* renderer;
     initSDL(window, renderer, SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_TITLE);
+
     gallery = new Gallery(renderer);
     Game game;
     SDL_Event e;
@@ -70,17 +73,17 @@ int main(int argc, char* argv[])
     const int frameDelay = 1000/fps;
     unsigned int frameStart;
     int frameTime;
-
+    renderSplashScreen();
     frameStart = SDL_GetTicks();
     Player player(renderer, 150, 240);
     Goal goal(renderer, 690, 210);
-
     map.loadMap("map12.txt");
+    int level = 1;
     //Level 1
-    while(!passLevel(player, goal)) {
+    while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
         renderLevel1(renderer, player, goal);
-
+        renderClock(renderer, frameStart, player.deaths, level);
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
@@ -98,9 +101,10 @@ int main(int argc, char* argv[])
     rect2.y = 150;
     rect2.h = 150;
     rect2.w = 150;
-    while(!passLevel(player, goal)) {
+    while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
         renderLevel2(renderer, player, goal, rect1, rect2);
+        renderClock(renderer, frameStart, player.deaths, level);
         if (playerHitEnemy2(player, rect1, rect2))
             setFirstPosition(player);
 
@@ -116,15 +120,16 @@ int main(int argc, char* argv[])
     Enemy enemy(renderer, 599, 180);
     Enemy enemy2(renderer, 240, 240);
     Enemy enemy3(renderer, 599, 300);
-    while(!passLevel(player, goal)) {
+    while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
         enemy.horizontalMoving(map.map);
         enemy2.horizontalMoving(map.map);
         enemy3.horizontalMoving(map.map);
+
         if (playerHitEnemy3(player, enemy, enemy2, enemy3))
             setFirstPosition(player);
         renderLevel3(renderer, player, enemy, goal, enemy2, enemy3);
-
+        renderClock(renderer, frameStart, player.deaths, level);
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
@@ -134,7 +139,7 @@ int main(int argc, char* argv[])
     player.setPosition(120, 240);
     ChasingEnemy enemyType2(renderer, 600, 180);
 
-    while(!passLevel(player, goal)) {
+    while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
         enemy.horizontalMoving(map.map);
         enemy2.horizontalMoving(map.map);
@@ -143,7 +148,7 @@ int main(int argc, char* argv[])
         if (playerHitEnemy4(player, enemy, enemy2, enemy3, enemyType2))
             setFirstPosition(player);
         renderLevel4(renderer, player, enemy, goal, enemy2, enemy3, enemyType2);
-
+        renderClock(renderer, frameStart, player.deaths, level);
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
@@ -156,14 +161,14 @@ int main(int argc, char* argv[])
     ChasingEnemy CEnemy1(renderer, 600, 100);
     ChasingEnemy CEnemy2(renderer, 600, 300);
 
-    while(!passLevel(player, goal)) {
+    while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
         CEnemy1.chasingEnemy(player, map.map);
         CEnemy2.chasingEnemy(player, map.map);
         if(playerHitEnemy5(player, CEnemy1, CEnemy2))
             setFirstPosition(player);
         renderLevel5(renderer, player, goal, CEnemy1, CEnemy2);
-
+        renderClock(renderer, frameStart, player.deaths, level);
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
@@ -176,7 +181,7 @@ int main(int argc, char* argv[])
     ChasingEnemy CEnemy3(renderer, 600, 500);
     goal.setPosition(450, 300);
 
-    while(!passLevel(player, goal)) {
+    while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
         CEnemy1.chasingEnemy(player, map.map);
         CEnemy2.chasingEnemy(player, map.map);
@@ -185,7 +190,7 @@ int main(int argc, char* argv[])
         if(playerHitEnemy6(player, CEnemy1, CEnemy2, CEnemy3))
             setFirstPosition(player);
         renderLevel6(renderer, player, goal, CEnemy1, CEnemy2, CEnemy3);
-
+        renderClock(renderer, frameStart, player.deaths, level);
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
@@ -198,8 +203,8 @@ int main(int argc, char* argv[])
     CEnemy1.setPosition(600, 200);
     CEnemy2.setPosition(600, 300);
     CEnemy2.setPosition(600, 500);
-    BulletEnemy BEnemy(renderer, 200, 200);
-    while(!passLevel(player, goal)) {
+    BulletEnemy BEnemy(renderer, 150, 30);
+    while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
         CEnemy1.chasingEnemy(player, map.map);
         CEnemy2.chasingEnemy(player, map.map);
@@ -209,7 +214,7 @@ int main(int argc, char* argv[])
         if(playerHitEnemy7(player, CEnemy1, CEnemy2, CEnemy3, BEnemy))
             setFirstPosition(player);
         renderLevel7(renderer, player, goal, CEnemy1, CEnemy2, CEnemy3, BEnemy);
-
+        renderClock(renderer, frameStart, player.deaths, level);
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
@@ -222,8 +227,9 @@ int main(int argc, char* argv[])
     CEnemy1.setPosition(600, 200);
     CEnemy2.setPosition(600, 300);
     CEnemy2.setPosition(600, 500);
-    BulletEnemy BEnemy2(renderer, 500, 200);
-    while(!passLevel(player, goal)) {
+    BEnemy.setPosition(90, 300);
+    BulletEnemy BEnemy2(renderer, 200, 30);
+    while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
         CEnemy1.chasingEnemy(player, map.map);
         CEnemy2.chasingEnemy(player, map.map);
@@ -234,21 +240,23 @@ int main(int argc, char* argv[])
         if(playerHitEnemy8(player, CEnemy1, CEnemy2, CEnemy3, BEnemy, BEnemy2))
             setFirstPosition(player);
         renderLevel8(renderer, player, goal, CEnemy1, CEnemy2, CEnemy3, BEnemy, BEnemy2);
-
+        renderClock(renderer, frameStart, player.deaths, level);
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
         }
     }
-
     waitUntilKeyPressed();
+    IMG_Quit();
     quitSDL(window, renderer);
     return 0;
 }
 
-bool passLevel(Player &player, Goal &goal) {
-    if (player.checkCollision(goal.goalRect))
+bool passLevel(int &level, Player &player, Goal &goal) {
+    if (player.checkCollision(goal.goalRect)) {
         Mix_PlayChannel(-1, gallery->getSound(LEVEL_PASS), 0);
+        level++;
+    }
     return (player.checkCollision(goal.goalRect));
 }
 
@@ -256,21 +264,24 @@ void interpretEvent(SDL_Event e, Player &player, int map[COLUMNS][ROWS])
 {
     while (SDL_PollEvent(&e)){
         if (e.type == SDL_KEYDOWN) {
-            Mix_PlayChannel(-1, gallery->getSound(MOVING), 0);
             switch (e.key.keysym.sym) {
                 case SDLK_UP:
+                    Mix_PlayChannel(-1, gallery->getSound(MOVING), 0);
                     if (player.canMove(UP, map))
                         player.move(UP);
                     break;
                 case SDLK_DOWN:
+                    Mix_PlayChannel(-1, gallery->getSound(MOVING), 0);
                     if (player.canMove(DOWN, map))
                         player.move(DOWN);
                     break;
                 case SDLK_LEFT:
+                    Mix_PlayChannel(-1, gallery->getSound(MOVING), 0);
                     if (player.canMove(LEFT, map))
                         player.move(LEFT);
                     break;
                 case SDLK_RIGHT:
+                    Mix_PlayChannel(-1, gallery->getSound(MOVING), 0);
                     if (player.canMove(RIGHT, map))
                         player.move(RIGHT);
                     break;
@@ -296,7 +307,6 @@ void drawCell(SDL_Renderer* renderer, int x, int y, SDL_Texture* texture)
 
 void drawWall(SDL_Renderer* renderer, int map[COLUMNS][ROWS])
 {
-    int left = 0, top = 0;
     int type = 0;
     for(int row=0; row<30; row++) {
         for(int column=0; column<20; column++) {
@@ -324,6 +334,17 @@ void drawWall(SDL_Renderer* renderer, int map[COLUMNS][ROWS])
     }
 }
 
+void renderClock(SDL_Renderer *renderer, int frameStart, int deaths, int level) {
+    gallery->renderTimeAndDeath(frameStart, deaths, level);
+    SDL_RenderPresent(renderer);
+}
+
+void renderSplashScreen()
+{
+    cout << "Press any key to start game" << endl;
+    waitUntilKeyPressed();
+}
+
 void drawVerticalLine(SDL_Renderer* renderer, int left, int top, int cells)
 {
     SDL_SetRenderDrawColor(renderer, LINE_COLOR.r, LINE_COLOR.g, LINE_COLOR.b, 0);
@@ -337,7 +358,7 @@ void drawHorizontalLine(SDL_Renderer* renderer, int left, int top, int cells)
 }
 
 void renderGameplay(SDL_Renderer* renderer) {
-    int top=0, left=0;
+    // int top=0, left=0;
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
     /*
@@ -353,7 +374,6 @@ void renderLevel1(SDL_Renderer* renderer, Player &player, Goal &goal) {
     drawWall(renderer, map.map);
     goal.render(renderer);
     player.render(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 void renderLevel2(SDL_Renderer* renderer, Player &player, Goal &goal, SDL_Rect &rect1, SDL_Rect &rect2) {
@@ -363,7 +383,6 @@ void renderLevel2(SDL_Renderer* renderer, Player &player, Goal &goal, SDL_Rect &
     SDL_RenderCopy(renderer, gallery->getImage(OBTACLE), NULL, &rect1);
     SDL_RenderCopy(renderer, gallery->getImage(OBTACLE), NULL, &rect2);
     player.render(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 void renderLevel3(SDL_Renderer* renderer, Player &player, Enemy &enemy, Goal &goal, Enemy &enemy2, Enemy &enemy3) {
@@ -374,7 +393,6 @@ void renderLevel3(SDL_Renderer* renderer, Player &player, Enemy &enemy, Goal &go
     enemy2.render(renderer);
     enemy3.render(renderer);
     player.render(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 void renderLevel4(SDL_Renderer* renderer, Player &player, Enemy &enemy, Goal &goal, Enemy &enemy2, Enemy &enemy3, ChasingEnemy &enemyType2) {
@@ -386,7 +404,6 @@ void renderLevel4(SDL_Renderer* renderer, Player &player, Enemy &enemy, Goal &go
     enemy3.render(renderer);
     enemyType2.render(renderer);
     player.render(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 void renderLevel5(SDL_Renderer* renderer, Player &player, Goal &goal, ChasingEnemy &enemy1, ChasingEnemy &enemy2) {
@@ -396,7 +413,6 @@ void renderLevel5(SDL_Renderer* renderer, Player &player, Goal &goal, ChasingEne
     enemy1.render(renderer);
     enemy2.render(renderer);
     player.render(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 void renderLevel6(SDL_Renderer* renderer, Player &player, Goal &goal, ChasingEnemy &enemy1, ChasingEnemy &enemy2, ChasingEnemy &enemy3) {
@@ -407,7 +423,6 @@ void renderLevel6(SDL_Renderer* renderer, Player &player, Goal &goal, ChasingEne
     enemy2.render(renderer);
     enemy3.render(renderer);
     player.render(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 void renderLevel7(SDL_Renderer* renderer, Player &player, Goal &goal, ChasingEnemy &enemy1, ChasingEnemy &enemy2, ChasingEnemy &enemy3, BulletEnemy &enemy4) {
@@ -419,7 +434,6 @@ void renderLevel7(SDL_Renderer* renderer, Player &player, Goal &goal, ChasingEne
     enemy3.render(renderer);
     enemy4.render(renderer);
     player.render(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 void renderLevel8(SDL_Renderer* renderer, Player &player, Goal &goal, ChasingEnemy &enemy1, ChasingEnemy &enemy2, ChasingEnemy &enemy3, BulletEnemy &enemy4, BulletEnemy &enemy5) {
@@ -432,7 +446,6 @@ void renderLevel8(SDL_Renderer* renderer, Player &player, Goal &goal, ChasingEne
     enemy4.render(renderer);
     enemy5.render(renderer);
     player.render(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 bool playerHitEnemy2(Player &player, SDL_Rect &rect1, SDL_Rect &rect2) {
@@ -468,5 +481,6 @@ bool playerHitEnemy8(Player &player, ChasingEnemy &enemy, ChasingEnemy &enemy2, 
 
 void setFirstPosition(Player &player) {
     player.setPosition(120, 240);
+    player.deaths++;
     Mix_PlayChannel(-1, gallery->getSound(HIT_ENEMY), 0);
 }

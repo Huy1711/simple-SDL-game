@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Gallery.h"
 #include "Position.h"
-#include "Game.h"
+
 using namespace std;
 
 class Game;
@@ -20,6 +20,7 @@ class Player {
 public:
     Position position;
     SDL_Rect playerRect;
+    int deaths=0;
 
     Player(SDL_Renderer* ren, int x, int y);
     ~Player() {
