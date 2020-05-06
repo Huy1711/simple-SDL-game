@@ -6,6 +6,7 @@ Gallery::Gallery(SDL_Renderer* renderer_)
     : renderer(renderer_)
 {
     loadGamePictures();
+    loadGameSounds();
 }
 
 Gallery::~Gallery()
@@ -31,7 +32,6 @@ SDL_Texture* Gallery::loadTexture(std::string path, SDL_Renderer* renderer )
 
 void Gallery::loadGamePictures()
 {
-
     pictures[TOP_WALL] = loadTexture("WallPic\\top.jpg", renderer);
     pictures[BOTTOM_WALL] = loadTexture("WallPic\\bottom.jpg", renderer);
     pictures[LEFT_WALL] = loadTexture("WallPic\\left.jpg", renderer);
@@ -47,6 +47,14 @@ void Gallery::loadGamePictures()
     pictures[LR_PARALLEL] = loadTexture("WallPic\\lrParallel.jpg", renderer);
     pictures[TB_PARALLEL] = loadTexture("WallPic\\tbParallel.jpg", renderer);
     pictures[FULL] = loadTexture("WallPic\\full.jpg", renderer);
+    pictures[OBTACLE] = loadTexture("hus.jpg", renderer);
 
 }
 
+void Gallery::loadGameSounds() {
+    if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) return;
+
+    sounds[MOVING] = Mix_LoadWAV("move.wav");
+    sounds[HIT_ENEMY] = Mix_LoadWAV("enemyHit.wav");
+    sounds[LEVEL_PASS] = Mix_LoadWAV("warp.wav");
+}

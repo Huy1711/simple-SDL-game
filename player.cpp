@@ -25,6 +25,15 @@ void Player::render(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, playerTex, NULL, &playerRect);
 }
 
+bool Player::canMove(Direction direction, int map[20][30]){
+    switch(direction) {
+        case LEFT: return (position.x > 0 && map[position.y/30][(position.x-speed)/30]==0);
+        case RIGHT: return (position.x < 900-30 && map[position.y/30][(position.x+speed)/30]==0);
+        case UP: return (position.y > 0 && map[(position.y-speed)/30][position.x/30]==0);
+        case DOWN: return  (position.y < 600-30 && map[(position.y+speed)/30][position.x/30]==0);
+    }
+}
+
 void Player::move(Direction direction) {
     switch(direction) {
         case UP: position.y -= speed; break;
@@ -33,6 +42,7 @@ void Player::move(Direction direction) {
         case RIGHT: position.x += speed; break;
     }
 }
+
 bool Player::checkCollision(const SDL_Rect &b) { //lazyfoo
     int leftA, leftB;
     int rightA, rightB;

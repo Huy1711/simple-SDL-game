@@ -37,9 +37,9 @@ void Goal::move(Direction direction) {
 bool Goal::canMove(Direction direction, int map[20][30]){
     switch(direction) {
         case LEFT: return (position.x > 0 && map[position.y/30][(position.x)/30]==0);
-        case RIGHT: return (position.x < 900-30 && map[position.y/30][(position.x)/30+3]==0);
+        case RIGHT: return (position.x < 900-30*3 && map[position.y/30][(position.x)/30+3]==0);
         case UP: return (position.y > 0 && map[position.y/30][position.x/30]==0);
-        case DOWN: return  (position.y < 600-30 && map[position.y/30+5][position.x/30]==0);
+        case DOWN: return  (position.y < 600-30*5 && map[(position.y)/30+5][position.x/30]==0);
     }
 }
 
