@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Gallery.h"
 #include "Position.h"
-#include "Game.h"
+#include "player.h"
 using namespace std;
 
 class Game;

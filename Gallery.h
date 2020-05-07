@@ -7,7 +7,6 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 #include "SDL_utils.h"
-#include "Game.h"
 using namespace std;
 
 enum PictureID {
@@ -32,19 +31,20 @@ class Gallery
 
 
 public:
-
+    string textOut;
+    string strValue;
+    unsigned int timeValue;
     SDL_Color textColor = {204,255,255};
     TTF_Font *font;
     SDL_Texture *textTexture;
     SDL_Rect textRect;
+    SDL_Surface *time;
 
     SDL_Texture *deathCountText;
     SDL_Rect deathCountRect;
 
     SDL_Texture *levelText;
     SDL_Rect levelRect;
-
-    SDL_Surface *splash;
 
     SDL_Renderer* renderer;
     Gallery(SDL_Renderer* renderer_);

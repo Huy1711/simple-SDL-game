@@ -10,7 +10,9 @@ Map::Map() {
 }
 
 Map::~Map() {
-
+    for(int i = 0; i < 20; i++)
+        delete[] map[i];
+    delete[] map;
 }
 
 void Map::loadMap(string path) {
@@ -27,4 +29,5 @@ void Map::loadMap(string path) {
         }
         y++;
     }
+    file.close();
 }

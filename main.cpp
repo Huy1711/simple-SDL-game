@@ -8,7 +8,6 @@
 #include "Gallery.h"
 #include "Map.h"
 #include "player.h"
-#include "Game.h"
 #include "Goal.h"
 #include "Enemy.h"
 #include "ChasingEnemy.h"
@@ -25,9 +24,6 @@ const int CELL_SIZE = 30;
 
 const int ROWS = SCREEN_WIDTH/BOARD_WIDTH;
 const int COLUMNS = SCREEN_HEIGHT/BOARD_HEIGHT;
-
-//const SDL_Color BOARD_COLOR = {0, 0, 0};
-//const SDL_Color LINE_COLOR = {128, 128, 128};
 
 void interpretEvent(SDL_Event e, Player &player, int map[COLUMNS][ROWS]);
 void renderGameplay(SDL_Renderer* renderer);
@@ -66,7 +62,6 @@ int main(int argc, char* argv[])
     initSDL(window, renderer, SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_TITLE);
 
     gallery = new Gallery(renderer);
-    Game game;
     SDL_Event e;
 
     const int fps = 30;         // let's make game youtube chanel
@@ -79,6 +74,7 @@ int main(int argc, char* argv[])
     Goal goal(renderer, 690, 210);
     map.loadMap("map12.txt");
     int level = 1;
+
     //Level 1
     while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
@@ -89,6 +85,7 @@ int main(int argc, char* argv[])
             SDL_Delay(frameDelay - frameTime);
         }
     }
+
     //Level 2
     player.setPosition(150, 240);
     SDL_Rect rect1;
@@ -246,8 +243,11 @@ int main(int argc, char* argv[])
             SDL_Delay(frameDelay - frameTime);
         }
     }
+
     waitUntilKeyPressed();
+    delete gallery;
     IMG_Quit();
+    Mix_Quit();
     quitSDL(window, renderer);
     return 0;
 }

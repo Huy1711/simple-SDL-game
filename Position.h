@@ -1,6 +1,5 @@
 #ifndef POSITION_H
 #define POSITION_H
-#include "Game.h"
 enum Direction {
     UP = 0, DOWN, LEFT, RIGHT
 };

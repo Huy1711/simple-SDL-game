@@ -4,7 +4,7 @@
 #include "Position.h"
 #include <cstring>
 #include <SDL.h>
-
+#include "player.h"
 class BulletEnemy {
 
     int size = 30;

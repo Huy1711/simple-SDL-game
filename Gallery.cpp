@@ -22,12 +22,19 @@ Gallery::Gallery(SDL_Renderer* renderer_)
     levelRect.y = 0;
     levelRect.w = 50;
     levelRect.h = 30;
+
+
 }
 
 Gallery::~Gallery()
 {
     for (SDL_Texture* texture : pictures)
         SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(renderer);
+    TTF_CloseFont(font);
+    for (Mix_Chunk* mix : sounds)
+        Mix_FreeChunk(mix);
+
 }
 
 SDL_Texture* Gallery::loadTexture(std::string path, SDL_Renderer* renderer )
@@ -75,41 +82,40 @@ void Gallery::loadGameSounds() {
 }
 
 void Gallery::loadGameText(int frameStart){
-    string textOut = "";
-    string strValue = "";
-    unsigned int timeValue = SDL_GetTicks()/1000 - frameStart/1000;
+    textOut = "";
+    strValue = "";
+    timeValue = SDL_GetTicks()/1000 - frameStart/1000;
     int minute = timeValue/60;
     int second = timeValue - minute*60;
     strValue += to_string(minute);
     strValue += ":";
     strValue += to_string(second);
     textOut += strValue;
+
     SDL_Surface *time = TTF_RenderText_Solid(font, textOut.c_str(), textColor);
     textTexture = SDL_CreateTextureFromSurface(renderer, time);
     SDL_FreeSurface(time);
-    SDL_QueryTexture(textTexture, NULL, NULL, &textRect.w, &textRect.h);
+
 }
 
 void Gallery::loadDeathCount(int deaths){
-    string textOut = "Fails: ";
-    string strValue = "";
+    textOut = "Fails: ";
+    strValue = "";
     strValue += to_string(deaths);
     textOut += strValue;
     SDL_Surface *deathCountSurface = TTF_RenderText_Solid(font, textOut.c_str(), textColor);
     deathCountText = SDL_CreateTextureFromSurface(renderer, deathCountSurface);
     SDL_FreeSurface(deathCountSurface);
-    SDL_QueryTexture(deathCountText, NULL, NULL, &deathCountRect.w, &deathCountRect.h);
 }
 
 void Gallery::loadLevelCount(int level){
-    string textOut = "Level ";
-    string strValue = "";
+    textOut = "Level ";
+    strValue = "";
     strValue += to_string(level);
     textOut += strValue;
     SDL_Surface *levelSurface = TTF_RenderText_Solid(font, textOut.c_str(), textColor);
     levelText = SDL_CreateTextureFromSurface(renderer, levelSurface);
     SDL_FreeSurface(levelSurface);
-    SDL_QueryTexture(levelText, NULL, NULL, &levelRect.w, &levelRect.h);
 }
 
 
@@ -120,4 +126,7 @@ void Gallery::renderTimeAndDeath(int frameStart, int deaths, int level) {
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
     SDL_RenderCopy(renderer, deathCountText, NULL, &deathCountRect);
     SDL_RenderCopy(renderer, levelText, NULL, &levelRect);
+    SDL_DestroyTexture(textTexture);
+    SDL_DestroyTexture(deathCountText);
+    SDL_DestroyTexture(levelText);
 }
