@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdlib>
-#include <ctime>
 #include <cmath>
 #include <cstring>
 #include <SDL.h>
@@ -12,11 +11,12 @@
 #include "Enemy.h"
 #include "ChasingEnemy.h"
 #include "BulletEnemy.h"
+#include "Menu.h"
 using namespace std;
 
 const int SCREEN_WIDTH = 900;
 const int SCREEN_HEIGHT = 600;
-const string WINDOW_TITLE = "My Game";
+const string WINDOW_TITLE = "VNU Game";
 
 const int BOARD_WIDTH = 30;
 const int BOARD_HEIGHT = 30;
@@ -45,7 +45,7 @@ bool playerHitEnemy8(Player &player, ChasingEnemy &enemy, ChasingEnemy &enemy2, 
 void drawVerticalLine(SDL_Renderer* renderer, int left, int top, int cells);
 void drawHorizontalLine(SDL_Renderer* renderer, int left, int top, int cells);
 void drawWall(SDL_Renderer* renderer, int map[COLUMNS][ROWS]);
-void renderSplashScreen();
+void renderSplashScreen(Menu &menu, SDL_Renderer *renderer);
 void renderClock(SDL_Renderer *renderer, int frameStart, int deaths, int level);
 bool passLevel(int &level, Player &player, Goal &goal);
 void setFirstPosition(Player &player);
@@ -55,8 +55,6 @@ Map map;
 
 int main(int argc, char* argv[])
 {
-    srand(time(0));
-
     SDL_Window* window;
     SDL_Renderer* renderer;
     initSDL(window, renderer, SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_TITLE);
@@ -68,13 +66,20 @@ int main(int argc, char* argv[])
     const int frameDelay = 1000/fps;
     unsigned int frameStart;
     int frameTime;
-    renderSplashScreen();
-    frameStart = SDL_GetTicks();
+    Menu menu(renderer);
     Player player(renderer, 150, 240);
     Goal goal(renderer, 690, 210);
     map.loadMap("map12.txt");
     int level = 1;
 
+    while(!menu.selected[PLAY]) {
+        renderSplashScreen(menu, renderer);
+        if(menu.selected[QUIT]) {
+            delete gallery;
+            quitSDL(window, renderer);
+        }
+    }
+    frameStart = SDL_GetTicks();
     //Level 1
     while(!passLevel(level, player, goal)) {
         interpretEvent(e, player, map.map);
@@ -244,10 +249,9 @@ int main(int argc, char* argv[])
         }
     }
 
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Congrat!", "You win", NULL);
     waitUntilKeyPressed();
     delete gallery;
-    IMG_Quit();
-    Mix_Quit();
     quitSDL(window, renderer);
     return 0;
 }
@@ -339,10 +343,13 @@ void renderClock(SDL_Renderer *renderer, int frameStart, int deaths, int level) 
     SDL_RenderPresent(renderer);
 }
 
-void renderSplashScreen()
+void renderSplashScreen(Menu &menu, SDL_Renderer *renderer)
 {
-    cout << "Press any key to start game" << endl;
-    waitUntilKeyPressed();
+    menu.renderBackground(renderer);
+    menu.renderOption();
+    //menu.getMouseEvent();
+    SDL_RenderPresent(renderer);
+
 }
 
 void drawVerticalLine(SDL_Renderer* renderer, int left, int top, int cells)

@@ -15,14 +15,13 @@ Gallery::Gallery(SDL_Renderer* renderer_)
 
     deathCountRect.x = 700;
     deathCountRect.y = 0;
-    deathCountRect.w = 50;
+    deathCountRect.w = 70;
     deathCountRect.h = 30;
 
     levelRect.x = 90;
     levelRect.y = 0;
-    levelRect.w = 50;
+    levelRect.w = 60;
     levelRect.h = 30;
-
 
 }
 

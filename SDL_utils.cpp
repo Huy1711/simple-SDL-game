@@ -1,6 +1,8 @@
 #include "SDL_utils.h"
 #include <iostream>
 #include <SDL_ttf.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
 
 
 void initSDL(SDL_Window* &window, SDL_Renderer* &renderer,
@@ -39,6 +41,8 @@ void quitSDL(SDL_Window* window, SDL_Renderer* renderer)
 {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
+	IMG_Quit();
+    Mix_Quit();
 	SDL_Quit();
 }
 

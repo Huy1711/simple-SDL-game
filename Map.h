@@ -2,8 +2,7 @@
 #define MAP_H
 #include <string>
 
-class Map{
-public:
+struct Map{
     Map();
     ~Map();
 

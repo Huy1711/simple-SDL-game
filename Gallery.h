@@ -49,7 +49,6 @@ public:
     SDL_Renderer* renderer;
     Gallery(SDL_Renderer* renderer_);
     ~Gallery();
-//    void setText(const std::string& text) {textOut = text;}
     void loadGameText(int frameStart);
     static SDL_Texture* loadTexture(std::string path, SDL_Renderer* renderer);
     void loadGameSounds();
