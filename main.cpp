@@ -347,7 +347,6 @@ void renderSplashScreen(Menu &menu, SDL_Renderer *renderer)
 {
     menu.renderBackground(renderer);
     menu.renderOption();
-    //menu.getMouseEvent();
     SDL_RenderPresent(renderer);
 
 }

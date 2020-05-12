@@ -33,7 +33,6 @@ public:
     bool canMove(Direction direction, int map[20][30]);
     void move(Direction direction);
     bool checkCollision(const SDL_Rect &b);
-    //void hitWall(SDL_Rect wall);
 };
 
 #endif // player__h
