@@ -20,7 +20,7 @@ const string WINDOW_TITLE = "VNU Game";
 
 const int BOARD_WIDTH = 30;
 const int BOARD_HEIGHT = 30;
-const int CELL_SIZE = 30;
+//const int CELL_SIZE = 30;
 
 const int ROWS = SCREEN_WIDTH/BOARD_WIDTH;
 const int COLUMNS = SCREEN_HEIGHT/BOARD_HEIGHT;

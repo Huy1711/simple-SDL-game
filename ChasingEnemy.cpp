@@ -36,10 +36,10 @@ void ChasingEnemy::move(Direction direction) {
 
 bool ChasingEnemy::canMove(Direction direction, int map[20][30]){
     switch(direction) {
-        case LEFT: return (enemyPos.x > 0 && map[enemyPos.y/30][(enemyPos.x)/30]==0);
-        case RIGHT: return (enemyPos.x < 900-30 && map[enemyPos.y/30][(enemyPos.x)/30+1]==0);
-        case UP: return (enemyPos.y > 0 && map[enemyPos.y/30][enemyPos.x/30]==0);
-        case DOWN: return  (enemyPos.y < 600-30 && map[enemyPos.y/30+1][enemyPos.x/30]==0);
+        case LEFT: return (enemyPos.x > 0 && map[enemyPos.y/CELL_SIZE][(enemyPos.x)/CELL_SIZE]==0);
+        case RIGHT: return (enemyPos.x < 900-30 && map[enemyPos.y/CELL_SIZE][(enemyPos.x)/CELL_SIZE+1]==0);
+        case UP: return (enemyPos.y > 0 && map[enemyPos.y/CELL_SIZE][enemyPos.x/CELL_SIZE]==0);
+        case DOWN: return  (enemyPos.y < 600-30 && map[enemyPos.y/CELL_SIZE+1][enemyPos.x/CELL_SIZE]==0);
     }
 }
 

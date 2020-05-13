@@ -1,5 +1,7 @@
 #ifndef POSITION_H
 #define POSITION_H
+#define CELL_SIZE 30
+
 enum Direction {
     UP = 0, DOWN, LEFT, RIGHT
 };

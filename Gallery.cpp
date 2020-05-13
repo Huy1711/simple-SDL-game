@@ -73,7 +73,7 @@ void Gallery::loadGamePictures()
 }
 
 void Gallery::loadGameSounds() {
-    if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) return;
+    if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4*1024) == -1) return;
 
     sounds[MOVING] = Mix_LoadWAV("move.wav");
     sounds[HIT_ENEMY] = Mix_LoadWAV("enemyHit.wav");
